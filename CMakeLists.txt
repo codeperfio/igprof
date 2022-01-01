@@ -71,7 +71,7 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES Linux)
 ENDIF()
 
 # Use ANSI mode for C and stricter compile options with GCC.
-SET(CMAKE_C_FLAGS "${CMAKE_ANSI_FLAGS} ${CMAKE_C_FLAGS}")
+SET(CMAKE_C_FLAGS "${CMAKE_ANSI_FLAGS} ${CMAKE_C_FLAGS} -fpermissive")
 SET(CMAKE_REQUIRED_FLAGS ${CMAKE_ANSI_FLAGS})
 IF(CMAKE_COMPILER_IS_GNUCC)
   ADD_DEFINITIONS(-ansi -pedantic -W -Wall -Wno-long-long)
