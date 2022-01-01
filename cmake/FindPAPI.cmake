@@ -24,7 +24,7 @@ NAMES include/papi.h
 find_library(PAPI_LIBRARIES
 # Pick the static library first for easier run-time linking.
 NAMES libpapi.so libpapi.a papi
-HINTS ${PAPI_PREFIX}/lib ${HILTIDEPS}/lib /usr/lib/x86_64-linux-gnu/ /usr/lib/
+HINTS /usr/lib/x86_64-linux-gnu/ /usr/lib/ ${PAPI_PREFIX}/lib ${HILTIDEPS}/lib 
 )
 
 find_path(PAPI_INCLUDE_DIRS
