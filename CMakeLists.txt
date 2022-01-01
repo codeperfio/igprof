@@ -1,5 +1,8 @@
 PROJECT(IGPROF C CXX)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+
+set(CMAKE_MODULE_PATH "${CMAKE_ROOT}/cmake" ${CMAKE_MODULE_PATH})
+
 FIND_PACKAGE(Threads)
 
 #Find PCRE library
@@ -37,21 +40,12 @@ IF(${CMAKE_SYSTEM_PROCESSOR} MATCHES arm OR ${CMAKE_SYSTEM_PROCESSOR} MATCHES aa
 ENDIF()
 
 # Find PAPI library
-IF(PAPI_INCLUDE_DIR AND PAPI_LIBRARY)
-  SET(PAPI_FOUND TRUE)
-ELSE(PAPI_INCLUDE_DIR AND PAPI_LIBRARY)
-  FIND_PATH(PAPI_INCLUDE_DIR NAMES papi.h
-            PATHS /usr/include /usr/local/include)
-  FIND_LIBRARY(PAPI_LIBRARY NAMES papi
-               PATHS /usr/lib /usr/local/lib)
-  IF(PAPI_INCLUDE_DIR AND PAPI_LIBRARY)
-    SET(PAPI_FOUND TRUE)
-  ELSE(PAPI_INCLUDE_DIR AND PAPI_LIBRARY)
-    SET(PAPI_FOUND FALSE)
-  ENDIF(PAPI_INCLUDE_DIR AND PAPI_LIBRARY)
-ENDIF(PAPI_INCLUDE_DIR AND PAPI_LIBRARY)
+FIND_PACKAGE(PAPI)
 IF(PAPI_FOUND)
-  SET(IGPROF_LIBS ${IGPROF_LIBS} ${PAPI_LIBRARY})
+  message(STATUS "Detected PAPI in: ${PAPI_LIBRARIES}")
+  SET(IGPROF_LIBS ${IGPROF_LIBS} ${PAPI_LIBRARIES})
+ELSE()
+  message(STATUS "Unable to detected PAPI. All energy measurement features disabled")
 ENDIF(PAPI_FOUND)
 
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config.h.cmake
@@ -119,7 +113,7 @@ IF(PAPI_FOUND)
   # Treat the directory containing papi.h as a system include directory in
   # order to suppress the "comma at end of enumerator list" error. The PAPI
   # header file does not conform to ANSI C.
-  INCLUDE_DIRECTORIES(SYSTEM ${PAPI_INCLUDE_DIR})
+  INCLUDE_DIRECTORIES(SYSTEM ${PAPI_INCLUDE_DIRS})
 ENDIF()
 ADD_LIBRARY(igprof SHARED
             src/hook.cc
