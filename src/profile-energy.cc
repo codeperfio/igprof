@@ -64,10 +64,12 @@ static bool
 energyInit(double &scaleFactor)
 {
 #ifdef PAPI_FOUND
-  if (PAPI_library_init(PAPI_VER_CURRENT) != PAPI_VER_CURRENT)
-  {
-    fprintf(stderr, "PAPI library initialisation failed.\n");
-    return false;
+  int retval;
+  retval=PAPI_library_init(PAPI_VER_CURRENT);
+  if (retval!=PAPI_VER_CURRENT) {
+          fprintf(stderr,"Error initializing PAPI! %s\n",
+                  PAPI_strerror(retval));
+          return false;
   }
 
   // Find the RAPL component of PAPI.
